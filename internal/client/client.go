@@ -96,12 +96,12 @@ func NewTableauClient(serverAddress string, apiVersion string, site string, pers
 	return tableauClient, nil
 }
 
-func (tableauClient *TableauClient) sendRequest(req *http.Request) ([]byte, error) {
+func (c *TableauClient) sendRequest(req *http.Request) ([]byte, error) {
 	req.Header.Add("Accept", "application/json")
 	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("X-Tableau-Auth", tableauClient.AuthToken)
+	req.Header.Add("X-Tableau-Auth", c.AuthToken)
 
-	res, err := tableauClient.HTTPClient.Do(req)
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
 		return nil, err
 	}
