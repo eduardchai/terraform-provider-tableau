@@ -88,6 +88,32 @@ func (c *TableauClient) GetGroup(groupName string) (*Group, error) {
 	return nil, fmt.Errorf("unable to find group with name '%s'", groupName)
 }
 
+func (c *TableauClient) GetGroupByID(groupID string) (*Group, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/groups?pageSize=1000", c.ApiUrl), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.sendRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := GetGroupResponse{}
+	err = json.Unmarshal(body, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, group := range resp.Groups.Groups {
+		if group.ID == groupID {
+			return &group, nil
+		}
+	}
+
+	return nil, fmt.Errorf("unable to find group with id %s", groupID)
+}
+
 func (c *TableauClient) UpdateGroup(groupID string, name string) (*Group, error) {
 	updatedGroup := Group{
 		Name: name,
