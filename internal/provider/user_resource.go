@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 	"terraform-provider-tableau/internal/client"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -134,14 +135,30 @@ func (r *userResource) Read(ctx context.Context, req resource.ReadRequest, resp 
 		return
 	}
 
-	// Get refreshed values
-	user, err := r.client.GetUser(state.ID.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Tableau User",
-			"Could not read Tableau user ID "+state.ID.ValueString()+": "+err.Error(),
-		)
-		return
+	var user *client.User
+	var err error
+
+	userID := state.ID.ValueString()
+	if strings.HasPrefix(userID, "email/") {
+		email := strings.Split(userID, "/")[1]
+		user, err = r.client.GetUserByEmail(email)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Reading Tableau User",
+				"Could not read Tableau user email "+email+": "+err.Error(),
+			)
+			return
+		}
+	} else {
+		// Get refreshed values
+		user, err = r.client.GetUser(userID)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Reading Tableau User",
+				"Could not read Tableau user ID "+userID+": "+err.Error(),
+			)
+			return
+		}
 	}
 
 	// Overwrite items with refreshed state
