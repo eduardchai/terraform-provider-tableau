@@ -34,12 +34,12 @@ func (c *TableauClient) CreateUser(email string, siteRole string, authSetting st
 		User: newUser,
 	}
 
-	newUserJson, err := json.Marshal(userRequest)
+	payload, err := json.Marshal(userRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/users", c.ApiUrl), strings.NewReader(string(newUserJson)))
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/users", c.ApiUrl), strings.NewReader(string(payload)))
 	if err != nil {
 		return nil, err
 	}
@@ -49,13 +49,13 @@ func (c *TableauClient) CreateUser(email string, siteRole string, authSetting st
 		return nil, err
 	}
 
-	userResponse := UserResponse{}
-	err = json.Unmarshal(body, &userResponse)
+	resp := UserResponse{}
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return &userResponse.User, nil
+	return &resp.User, nil
 }
 
 func (c *TableauClient) GetUser(userID string) (*User, error) {
@@ -69,17 +69,16 @@ func (c *TableauClient) GetUser(userID string) (*User, error) {
 		return nil, err
 	}
 
-	userResponse := UserResponse{}
-	err = json.Unmarshal(body, &userResponse)
+	resp := UserResponse{}
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return &userResponse.User, nil
+	return &resp.User, nil
 }
 
 func (c *TableauClient) UpdateUser(userID string, email string, siteRole string, authSetting string) (*User, error) {
-
 	updatedUser := User{
 		Email:       email,
 		Name:        email,
@@ -90,12 +89,12 @@ func (c *TableauClient) UpdateUser(userID string, email string, siteRole string,
 		User: updatedUser,
 	}
 
-	updatedUserJson, err := json.Marshal(userRequest)
+	payload, err := json.Marshal(userRequest)
 	if err != nil {
 		return nil, err
 	}
 
-	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/users/%s", c.ApiUrl, userID), strings.NewReader(string(updatedUserJson)))
+	req, err := http.NewRequest("PUT", fmt.Sprintf("%s/users/%s", c.ApiUrl, userID), strings.NewReader(string(payload)))
 	if err != nil {
 		return nil, err
 	}
@@ -105,13 +104,13 @@ func (c *TableauClient) UpdateUser(userID string, email string, siteRole string,
 		return nil, err
 	}
 
-	userResponse := UserResponse{}
-	err = json.Unmarshal(body, &userResponse)
+	resp := UserResponse{}
+	err = json.Unmarshal(body, &resp)
 	if err != nil {
 		return nil, err
 	}
 
-	return &userResponse.User, nil
+	return &resp.User, nil
 }
 
 func (c *TableauClient) DeleteUser(userID string) error {
