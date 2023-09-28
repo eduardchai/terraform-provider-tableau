@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -21,6 +22,15 @@ type UserRequest struct {
 
 type UserResponse struct {
 	User User `json:"user"`
+}
+
+type UserListResponse struct {
+	Users []User `json:"user"`
+}
+
+type GetUserResponse struct {
+	Users      UserListResponse `json:"users"`
+	Pagination Pagination       `json:"pagination"`
 }
 
 func (c *TableauClient) CreateUser(email string, siteRole string, authSetting string) (*User, error) {
@@ -76,6 +86,32 @@ func (c *TableauClient) GetUser(userID string) (*User, error) {
 	}
 
 	return &resp.User, nil
+}
+
+func (c *TableauClient) GetUserByEmail(userEmail string) (*User, error) {
+	req, err := http.NewRequest("GET", fmt.Sprintf("%s/users?filter=name:eq:%s", c.ApiUrl, url.QueryEscape(userEmail)), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := c.sendRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := GetUserResponse{}
+	err = json.Unmarshal(body, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, user := range resp.Users.Users {
+		if user.Email == userEmail {
+			return &user, nil
+		}
+	}
+
+	return nil, fmt.Errorf("unable to find user with email '%s'", userEmail)
 }
 
 func (c *TableauClient) UpdateUser(userID string, email string, siteRole string, authSetting string) (*User, error) {
