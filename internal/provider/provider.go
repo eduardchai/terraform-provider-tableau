@@ -251,5 +251,6 @@ func (p *tableauProvider) Resources(_ context.Context) []func() resource.Resourc
 	return []func() resource.Resource{
 		NewUserResource,
 		NewGroupResource,
+		NewGroupMembershipResource,
 	}
 }
