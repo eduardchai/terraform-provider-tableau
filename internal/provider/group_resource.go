@@ -99,17 +99,18 @@ func (r *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 	}
 
 	// Get refreshed values
-	group, err := r.client.GetGroup(state.Name.ValueString())
+	group, err := r.client.GetGroupByID(state.ID.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Error Reading Tableau Group",
-			"Could not read Tableau Group Name "+state.Name.ValueString()+": "+err.Error(),
+			"Could not read Tableau Group "+state.ID.ValueString()+": "+err.Error(),
 		)
 		return
 	}
 
 	// Overwrite items with refreshed state
 	state.ID = types.StringValue(group.ID)
+	state.Name = types.StringValue(group.Name)
 
 	// Set refreshed state
 	diags = resp.State.Set(ctx, &state)
