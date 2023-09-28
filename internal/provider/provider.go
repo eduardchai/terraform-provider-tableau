@@ -222,10 +222,10 @@ func (p *tableauProvider) Configure(ctx context.Context, req provider.ConfigureR
 	client, err := client.NewTableauClient(serverURL, apiVersion, site, personalAccessTokenName, personalAccessTokenSecret)
 	if err != nil {
 		resp.Diagnostics.AddError(
-			"Unable to Create HashiCups API Client",
-			"An unexpected error occurred when creating the HashiCups API client. "+
+			"Unable to Create Tableau API Client",
+			"An unexpected error occurred when creating the Tableau API client. "+
 				"If the error is not clear, please contact the provider developers.\n\n"+
-				"HashiCups Client Error: "+err.Error(),
+				"Tableau Client Error: "+err.Error(),
 		)
 		return
 	}
@@ -242,6 +242,7 @@ func (p *tableauProvider) Configure(ctx context.Context, req provider.ConfigureR
 func (p *tableauProvider) DataSources(_ context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{
 		NewUserDataSource,
+		NewGroupDataSource,
 	}
 }
 
@@ -249,5 +250,6 @@ func (p *tableauProvider) DataSources(_ context.Context) []func() datasource.Dat
 func (p *tableauProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewUserResource,
+		NewGroupResource,
 	}
 }
