@@ -77,5 +77,10 @@ jobs:
       - run: go mod download
       - env:
           TF_ACC: "1"
+          TABLEAU_SERVER_URL: ${{ secrets.TABLEAU_SERVER_URL }}
+          TABLEAU_API_VERSION: ${{ secrets.TABLEAU_API_VERSION }}
+          TABLEAU_SITE: ${{ secrets.TABLEAU_SITE }}
+          TABLEAU_PAT_NAME: ${{ secrets.TABLEAU_PAT_NAME }}
+          TABLEAU_PAT_SECRET: ${{ secrets.TABLEAU_PAT_SECRET }}
         run: go test -v -cover ./internal/provider/
         timeout-minutes: 10
