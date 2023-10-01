@@ -112,7 +112,7 @@ func (r *groupMembershipResource) Read(ctx context.Context, req resource.ReadReq
 	// Get refreshed values
 	groupMembershipEmailList, err := r.client.GetGroupMembership(state.GroupID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError(
+		resp.Diagnostics.AddWarning(
 			"Error Reading Tableau Group Membership",
 			"Could not read Tableau Group Membership"+": "+err.Error(),
 		)

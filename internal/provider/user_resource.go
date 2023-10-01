@@ -237,10 +237,18 @@ func (r *userResource) Delete(ctx context.Context, req resource.DeleteRequest, r
 	// Delete user
 	err := r.client.DeleteUser(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Delete Tableau User",
-			err.Error(),
-		)
+		if strings.Contains(err.Error(), "404") {
+			// User does not exist, so we can ignore this error
+			resp.Diagnostics.AddWarning(
+				"Unable to Delete Tableau User",
+				err.Error(),
+			)
+		} else {
+			resp.Diagnostics.AddError(
+				"Unable to Delete Tableau User",
+				err.Error(),
+			)
+		}
 		return
 	}
 }

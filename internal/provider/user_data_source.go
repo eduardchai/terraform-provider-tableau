@@ -39,11 +39,11 @@ func (d *userDataSource) Schema(_ context.Context, _ datasource.SchemaRequest, r
 		Description: "Retrieve user details",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.StringAttribute{
-				Required:    true,
+				Computed:    true,
 				Description: "ID of the user",
 			},
 			"email": schema.StringAttribute{
-				Computed:    true,
+				Required:    true,
 				Description: "User email",
 			},
 			"site_role": schema.StringAttribute{
@@ -63,7 +63,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 
-	user, err := d.client.GetUser(state.ID.ValueString())
+	user, err := d.client.GetUserByEmail(state.Email.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tableau User",
@@ -72,7 +72,7 @@ func (d *userDataSource) Read(ctx context.Context, req datasource.ReadRequest, r
 		return
 	}
 
-	state.ID = types.StringValue(user.ID)
+	state.ID = types.StringValue("placeholder")
 	state.Email = types.StringValue(user.Email)
 	state.SiteRole = types.StringValue(user.SiteRole)
 	state.AuthSetting = types.StringValue(user.AuthSetting)

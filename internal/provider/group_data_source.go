@@ -53,7 +53,7 @@ func (d *groupDataSource) Read(ctx context.Context, req datasource.ReadRequest, 
 
 	resp.Diagnostics.Append(req.Config.Get(ctx, &state)...)
 
-	group, err := d.client.GetGroup(state.Name.ValueString())
+	group, err := d.client.GetGroupByName(state.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tableau Group",

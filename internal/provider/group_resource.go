@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"fmt"
+	"strings"
 	"terraform-provider-tableau/internal/client"
 
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -98,14 +99,30 @@ func (r *groupResource) Read(ctx context.Context, req resource.ReadRequest, resp
 		return
 	}
 
-	// Get refreshed values
-	group, err := r.client.GetGroupByID(state.ID.ValueString())
-	if err != nil {
-		resp.Diagnostics.AddError(
-			"Error Reading Tableau Group",
-			"Could not read Tableau Group "+state.ID.ValueString()+": "+err.Error(),
-		)
-		return
+	var group *client.Group
+	var err error
+
+	groupID := state.ID.ValueString()
+	if strings.HasPrefix(groupID, "name/") {
+		groupName := strings.Split(groupID, "/")[1]
+		group, err = r.client.GetGroupByName(groupName)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Unable to Read Tableau Group with Name",
+				groupID,
+			)
+			return
+		}
+	} else {
+		// Get refreshed values
+		group, err = r.client.GetGroupByID(groupID)
+		if err != nil {
+			resp.Diagnostics.AddError(
+				"Error Reading Tableau Group with ID",
+				"Could not read Tableau Group "+groupID+": "+err.Error(),
+			)
+			return
+		}
 	}
 
 	// Overwrite items with refreshed state
@@ -144,7 +161,7 @@ func (r *groupResource) Update(ctx context.Context, req resource.UpdateRequest, 
 	}
 
 	// Fetch updated group from server
-	updatedGroup, err := r.client.GetGroup(plan.Name.ValueString())
+	updatedGroup, err := r.client.GetGroupByName(plan.Name.ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Unable to Read Tableau Group",
@@ -178,10 +195,18 @@ func (r *groupResource) Delete(ctx context.Context, req resource.DeleteRequest, 
 	// Delete group
 	err := r.client.DeleteGroup(state.ID.ValueString())
 	if err != nil {
-		resp.Diagnostics.AddError(
-			"Unable to Delete Tableau Group",
-			err.Error(),
-		)
+		if strings.Contains(err.Error(), "404") {
+			// If the group is already deleted, we can ignore the error
+			resp.Diagnostics.AddWarning(
+				"Unable to Delete Tableau Group",
+				err.Error(),
+			)
+		} else {
+			resp.Diagnostics.AddError(
+				"Unable to Delete Tableau Group",
+				err.Error(),
+			)
+		}
 		return
 	}
 }
@@ -208,5 +233,5 @@ func (r *groupResource) Configure(_ context.Context, req resource.ConfigureReque
 
 func (r *groupResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	// Retrieve import ID and save to id attribute
-	resource.ImportStatePassthroughID(ctx, path.Root("name"), req, resp)
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }

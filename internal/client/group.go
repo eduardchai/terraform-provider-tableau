@@ -62,7 +62,7 @@ func (c *TableauClient) CreateGroup(name string) (*Group, error) {
 	return &resp.Group, nil
 }
 
-func (c *TableauClient) GetGroup(groupName string) (*Group, error) {
+func (c *TableauClient) GetGroupByName(groupName string) (*Group, error) {
 	req, err := http.NewRequest("GET", fmt.Sprintf("%s/groups?filter=name:eq:%s", c.ApiUrl, url.QueryEscape(groupName)), nil)
 	if err != nil {
 		return nil, err
