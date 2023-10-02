@@ -14,19 +14,19 @@ func TestAccUserDataSource(t *testing.T) {
 			// Read testing
 			{
 				Config: providerConfig + `
-resource "tableau_user" "test" {
-	email 		 = "test@example.com"
+resource "tableau_user" "uat_test" {
+	email 		 = "uat_test@example.com"
 	site_role 	 = "Unlicensed"
 	auth_setting = "OpenID"
 }
 
-data "tableau_user" "test" {
-	email = resource.tableau_user.test.email
+data "tableau_user" "uat_test" {
+	email = resource.tableau_user.uat_test.email
 }`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.tableau_user.test", "email", "test@example.com"),
-					resource.TestCheckResourceAttr("data.tableau_user.test", "site_role", "Unlicensed"),
-					resource.TestCheckResourceAttr("data.tableau_user.test", "auth_setting", "OpenID"),
+					resource.TestCheckResourceAttr("data.tableau_user.uat_test", "email", "uat_test@example.com"),
+					resource.TestCheckResourceAttr("data.tableau_user.uat_test", "site_role", "Unlicensed"),
+					resource.TestCheckResourceAttr("data.tableau_user.uat_test", "auth_setting", "OpenID"),
 				),
 			},
 		},

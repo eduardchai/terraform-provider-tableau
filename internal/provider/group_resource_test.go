@@ -14,31 +14,31 @@ func TestAccGroupResource(t *testing.T) {
 			// Create and Read testing
 			{
 				Config: providerConfig + `
-resource "tableau_group" "terraform_provider_test" {
-	name = "terraform-provider-test"
+resource "tableau_group" "uat_terraform_provider_test" {
+	name = "uat-terraform-provider-test"
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("tableau_group.terraform_provider_test", "name", "terraform-provider-test"),
+					resource.TestCheckResourceAttr("tableau_group.uat_terraform_provider_test", "name", "uat-terraform-provider-test"),
 					// Verify dynamic values have any value set in the state.
-					resource.TestCheckResourceAttrSet("tableau_group.terraform_provider_test", "id"),
+					resource.TestCheckResourceAttrSet("tableau_group.uat_terraform_provider_test", "id"),
 				),
 			},
 			// ImportState testing
 			{
-				ResourceName:      "tableau_group.terraform_provider_test",
+				ResourceName:      "tableau_group.uat_terraform_provider_test",
 				ImportState:       true,
 				ImportStateVerify: true,
 			},
 			// Update and Read testing
 			{
 				Config: providerConfig + `
-resource "tableau_group" "terraform_provider_test" {
-	name = "terraform-provider-test-updated"
+resource "tableau_group" "uat_terraform_provider_test" {
+	name = "uat-terraform-provider-test-updated"
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("tableau_group.terraform_provider_test", "name", "terraform-provider-test-updated"),
+					resource.TestCheckResourceAttr("tableau_group.uat_terraform_provider_test", "name", "uat-terraform-provider-test-updated"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase

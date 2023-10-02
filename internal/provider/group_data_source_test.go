@@ -14,15 +14,15 @@ func TestAccGroupDataSource(t *testing.T) {
 			// Read testing
 			{
 				Config: providerConfig + `
-resource "tableau_group" "terraform_provider_test" {
-	name = "terraform provider test"
+resource "tableau_group" "uat_terraform_provider_test" {
+	name = "UAT - terraform provider test"
 }
 
-data "tableau_group" "terraform_provider_test" {
-	name = resource.tableau_group.terraform_provider_test.name
+data "tableau_group" "uat_terraform_provider_test" {
+	name = resource.tableau_group.uat_terraform_provider_test.name
 }`,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("data.tableau_group.terraform_provider_test", "name", "terraform provider test"),
+					resource.TestCheckResourceAttr("data.tableau_group.uat_terraform_provider_test", "name", "UAT - terraform provider test"),
 				),
 			},
 		},
