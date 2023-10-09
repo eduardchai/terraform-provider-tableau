@@ -31,7 +31,7 @@ resource "tableau_user" "test_user" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) User ID
 
 ## Import
 

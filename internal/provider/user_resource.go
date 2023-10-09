@@ -51,6 +51,7 @@ func (r *userResource) Schema(_ context.Context, _ resource.SchemaRequest, resp 
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+				Description: "User ID",
 			},
 			"email": schema.StringAttribute{
 				Required:    true,

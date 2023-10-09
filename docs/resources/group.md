@@ -27,7 +27,7 @@ resource "tableau_group" "test_group" {
 
 ### Read-Only
 
-- `id` (String) The ID of this resource.
+- `id` (String) Group ID
 
 ## Import
 
