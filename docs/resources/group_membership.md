@@ -37,7 +37,7 @@ resource "tableau_group_membership" "test_group_membership" {
 ### Required
 
 - `group_id` (String) Group id
-- `users` (List of String) List of user ids
+- `users` (Set of String) List of user emails
 
 ## Import
 

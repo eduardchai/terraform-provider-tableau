@@ -56,25 +56,25 @@ func (p *tableauProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 		Description: "Interact with Tableau.",
 		Attributes: map[string]schema.Attribute{
 			"server_url": schema.StringAttribute{
-				Description: "Server URL for Tableau. May also be provided via TABLEAU_SERVER_URL environment variable.",
+				Description: "Server URL for Tableau. May also be provided via `TABLEAU_SERVER_URL` environment variable.",
 				Optional:    true,
 			},
 			"api_version": schema.StringAttribute{
-				Description: "API version for Tableau. May also be provided via TABLEAU_API_VERSION environment variable.",
+				Description: "API version for Tableau. May also be provided via `TABLEAU_API_VERSION` environment variable.",
 				Optional:    true,
 			},
 			"personal_access_token_name": schema.StringAttribute{
-				Description: "Personal Access Token (PAT) name for Tableau. May also be provided via TABLEAU_PAT_NAME environment variable.",
+				Description: "Personal Access Token (PAT) name for Tableau. May also be provided via `TABLEAU_PAT_NAME` environment variable.",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"personal_access_token_secret": schema.StringAttribute{
-				Description: "Personal Access Token (PAT) secret for Tableau. May also be provided via TABLEAU_PAT_SECRET environment variable.",
+				Description: "Personal Access Token (PAT) secret for Tableau. May also be provided via `TABLEAU_PAT_SECRET` environment variable.",
 				Optional:    true,
 				Sensitive:   true,
 			},
 			"site": schema.StringAttribute{
-				Description: "Site for Tableau. May also be provided via TABLEAU_SITE environment variable.",
+				Description: "Site for Tableau. May also be provided via `TABLEAU_SITE` environment variable.",
 				Optional:    true,
 				Sensitive:   true,
 			},

@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/avast/retry-go/v4"
 )
 
 type TableauClient struct {
@@ -101,19 +103,30 @@ func (c *TableauClient) sendRequest(req *http.Request) ([]byte, error) {
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("X-Tableau-Auth", c.AuthToken)
 
-	res, err := c.HTTPClient.Do(req)
+	body, err := retry.DoWithData(
+		func() ([]byte, error) {
+			res, err := c.HTTPClient.Do(req)
+			if err != nil {
+				return nil, err
+			}
+			defer res.Body.Close()
+			body, err := io.ReadAll(res.Body)
+			if err != nil {
+				return nil, err
+			}
+
+			if (res.StatusCode != http.StatusOK) && (res.StatusCode != 201) && (res.StatusCode != 204) {
+				return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
+			}
+
+			return body, nil
+		},
+		retry.Attempts(3),
+		retry.Delay(5*time.Second),
+	)
+
 	if err != nil {
 		return nil, err
-	}
-	defer res.Body.Close()
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if (res.StatusCode != http.StatusOK) && (res.StatusCode != 201) && (res.StatusCode != 204) {
-		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}
 
 	return body, nil

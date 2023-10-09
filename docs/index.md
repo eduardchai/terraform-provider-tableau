@@ -28,8 +28,8 @@ provider "tableau" {
 
 ### Optional
 
-- `api_version` (String) API version for Tableau. May also be provided via TABLEAU_API_VERSION environment variable.
-- `personal_access_token_name` (String, Sensitive) Personal Access Token (PAT) name for Tableau. May also be provided via TABLEAU_PAT_NAME environment variable.
-- `personal_access_token_secret` (String, Sensitive) Personal Access Token (PAT) secret for Tableau. May also be provided via TABLEAU_PAT_SECRET environment variable.
-- `server_url` (String) Server URL for Tableau. May also be provided via TABLEAU_SERVER_URL environment variable.
-- `site` (String, Sensitive) Site for Tableau. May also be provided via TABLEAU_SITE environment variable.
+- `api_version` (String) API version for Tableau. May also be provided via `TABLEAU_API_VERSION` environment variable.
+- `personal_access_token_name` (String, Sensitive) Personal Access Token (PAT) name for Tableau. May also be provided via `TABLEAU_PAT_NAME` environment variable.
+- `personal_access_token_secret` (String, Sensitive) Personal Access Token (PAT) secret for Tableau. May also be provided via `TABLEAU_PAT_SECRET` environment variable.
+- `server_url` (String) Server URL for Tableau. May also be provided via `TABLEAU_SERVER_URL` environment variable.
+- `site` (String, Sensitive) Site for Tableau. May also be provided via `TABLEAU_SITE` environment variable.

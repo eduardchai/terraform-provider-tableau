@@ -47,6 +47,7 @@ func (r *groupResource) Schema(_ context.Context, _ resource.SchemaRequest, resp
 				PlanModifiers: []planmodifier.String{
 					stringplanmodifier.UseStateForUnknown(),
 				},
+				Description: "Group ID",
 			},
 			"name": schema.StringAttribute{
 				Required:    true,

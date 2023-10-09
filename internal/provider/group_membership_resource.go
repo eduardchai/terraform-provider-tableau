@@ -26,7 +26,7 @@ type groupMembershipResource struct {
 
 type groupMembershipResourceModel struct {
 	GroupID    types.String `tfsdk:"group_id"`
-	UserEmails types.List   `tfsdk:"users"`
+	UserEmails types.Set    `tfsdk:"users"`
 }
 
 func NewGroupMembershipResource() resource.Resource {
@@ -49,9 +49,9 @@ func (r *groupMembershipResource) Schema(_ context.Context, _ resource.SchemaReq
 					stringplanmodifier.UseStateForUnknown(),
 				},
 			},
-			"users": schema.ListAttribute{
+			"users": schema.SetAttribute{
 				Required:    true,
-				Description: "List of user ids",
+				Description: "List of user emails",
 				ElementType: types.StringType,
 			},
 		},
@@ -121,7 +121,9 @@ func (r *groupMembershipResource) Read(ctx context.Context, req resource.ReadReq
 
 	// Overwrite items with refreshed state
 	state.GroupID = types.StringValue(groupMembershipEmailList.GroupID)
-	state.UserEmails, diags = types.ListValueFrom(ctx, types.StringType, groupMembershipEmailList.UserEmails)
+	state.UserEmails, diags = types.SetValueFrom(ctx, types.StringType, groupMembershipEmailList.UserEmails)
+	// SetValueMust will prevent empty list to be set as null
+	state.UserEmails = types.SetValueMust(types.StringType, state.UserEmails.Elements())
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -206,7 +208,9 @@ func (r *groupMembershipResource) Update(ctx context.Context, req resource.Updat
 
 	// Update resource state with updated values
 	plan.GroupID = types.StringValue(updatedGroupMembershipEmailList.GroupID)
-	plan.UserEmails, diags = types.ListValueFrom(ctx, types.StringType, updatedGroupMembershipEmailList.UserEmails)
+	plan.UserEmails, diags = types.SetValueFrom(ctx, types.StringType, updatedGroupMembershipEmailList.UserEmails)
+	// SetValueMust will prevent empty list to be set as null
+	plan.UserEmails = types.SetValueMust(types.StringType, plan.UserEmails.Elements())
 	resp.Diagnostics.Append(diags...)
 	if resp.Diagnostics.HasError() {
 		return
